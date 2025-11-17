@@ -86,5 +86,3 @@ MENU DE CLIENTES DE SISTEMAS DISTRIBUÍDOS
 3) 📦 Executar Cliente Protocol Buffer (Porta 8082)
 4) 🚪 Sair
 ```
-
-**Nota sobre JSON (Opção 2):** Se o cliente JSON ainda retornar `i/o timeout`, isso confirma a falha no lado do servidor, conforme documentado na seção Desafios Críticos.
