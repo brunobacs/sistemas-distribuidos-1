@@ -85,4 +85,4 @@ MENU DE CLIENTES DE SISTEMAS DISTRIBUÍDOS
 🎥 Apresentação
 Para mais informações sobre a comparação de desempenho e eficiência de Protocol Buffers versus JSON, consulte o vídeo:
 
-YouTube: Protocol Buffers vs JSON vs XML vs CSV Performance Comparison
+YouTube: [Sistemas Distribuídos - clientes socket](https://youtu.be/dTSndAm0lTM)
