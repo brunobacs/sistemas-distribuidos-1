@@ -34,24 +34,20 @@ O projeto é organizado modularmente, onde cada cliente reside em seu próprio d
 
   * **Protocolo:** Comunicação baseada em linhas de texto (`|`)
   * **Formato Descoberto:** `COMANDO|chave1=valor1|chave2=valor2|...|FIM\n`
-  * **Implementação:** O cliente (`string.go`) usa a função `formatStringsMessage` para construir o payload exato, incluindo os pares **chave=valor** e o terminador **`|FIM\n`**, que não estava na documentação original.
-  * **Desafio:** **Reversão de Engenharia do Terminador.** O servidor exigia o terminador não-ppadrão `|FIM` e o formato `chave=valor` em todas as requisições (`AUTH`, `OP`), o que exigiu múltiplas iterações para depurar.
+  * **Implementação:** O cliente (`string.go`) usa a função `formatStringsMessage` para construir o payload exato, incluindo os pares **chave=valor** e o terminador **`|FIM\n`**.
+  * **Desafio:** **Reversão de Engenharia do Terminador.** O servidor exigia o terminador `|FIM` e o formato `chave=valor` em todas as requisições (`AUTH`, `OP`), o que exigiu múltiplas iterações para depurar.
 
 ### 2\. Cliente Protocolo JSON (Porta 8081)
 
   * **Protocolo:** Comunicação baseada em objetos JSON (`\n`)
-  * **Formato Descoberto:** A estrutura real não era a da documentação original, mas sim **`{"tipo": "...", "operacao": "...", "parametros": {...}}`**.
+  * **Formato Descoberto:** A estrutura real era **`{"tipo": "...", "operacao": "...", "parametros": {...}}`**.
   * **Implementação:** O cliente (`Json/main.go`) utiliza structs dedicadas (`AuthRequest`, `OperationRequest`) com tags JSON minúsculas (`json:"aluno_id"`, `json:"parametros"`) para garantir a serialização correta.
-  * **Desafio:** **Falha de Servidor e Timeout.** O servidor JSON falhou consistentemente com `i/o timeout` na leitura da resposta (mesmo com requisições corretas), indicando um provável **erro de tratamento de JSON** ou **falha de firewall de saída** no lado do servidor. O cliente foi implementado com a estrutura correta, mas a comunicação falha devido a problemas externos.
+
 
 ### 3\. Cliente Protocolo Protocol Buffers (Porta 8082)
 
   * **Protocolo:** Comunicação binária com cabeçalho de 4 bytes (tamanho)
-  * **Formato Descoberto:** A autenticação e as operações exigem a inclusão do campo **`timestamp`** (formato RFC3339Nano) e o uso de um **`map<string, string>`** para parâmetros na mensagem `Operacao`.
-  * **Implementação:** O cliente (`ProtocolBuffer/protocolbuff-client.go`) implementa:
-      * **Codificação/Decodificação Binária:** Funções `encodeMessage` (cria o cabeçalho de 4 bytes + payload) e `decodeResponse` (lê o cabeçalho e o payload).
-      * **Estrutura Correta:** Uso do `oneof conteudo` e `map[string]string Parametros` (o formato real do servidor) para evitar o erro de serialização binária.
-  * **Desafio:** **Incompatibilidade de Schema Binário.** Foi necessário inferir e aplicar o schema *real* do servidor (incluindo `Timestamp` e o `map<string, string>`) em vez do `repeated string` inicial, para que o servidor aceitasse o payload.
+  * **Formato Descoberto:** A autenticação e as operações exigem a inclusão do campo **`timestamp`** e o uso de um **`map<string, string>`** para parâmetros na mensagem `Operacao`.
 
 -----
 
@@ -86,3 +82,7 @@ MENU DE CLIENTES DE SISTEMAS DISTRIBUÍDOS
 3) 📦 Executar Cliente Protocol Buffer (Porta 8082)
 4) 🚪 Sair
 ```
+🎥 Apresentação
+Para mais informações sobre a comparação de desempenho e eficiência de Protocol Buffers versus JSON, consulte o vídeo:
+
+YouTube: Protocol Buffers vs JSON vs XML vs CSV Performance Comparison
