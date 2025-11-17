@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+// Define o namespace Go
+package api;
+option go_package = "./api"; 
+
+// --- Mensagens de Requisição ---
+message Requisicao {
+    oneof tipo {
+        Auth auth = 1;
+        Operacao operacao = 2;
+        Info info = 3;
+        Logout logout = 4;
+    }
+}
+message Auth {
+    string aluno_id = 1; // Usando string
+}
+message Operacao {
+    string token = 1;
+    string nome_operacao = 2; 
+    repeated string parametros = 3; // Parâmetros como lista de strings
+}
+message Info {
+    string tipo = 1; 
+}
+message Logout {
+    string token = 1;
+}
+
+// --- Mensagens de Resposta ---
+message Resposta {
+    oneof resultado {
+        Respostaok ok = 1;
+        RespostaErro erro = 2;
+    }
+}
+message Respostaok {
+    string token = 1;
+    string nome = 2;
+    string matricula = 3;
+    // ... (campos de retorno de sucesso)
+}
+message RespostaErro {
+    string mensagem = 1;
+}
